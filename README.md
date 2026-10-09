@@ -84,7 +84,7 @@ The fix wasn't better slides. It was an app that teaches itself, in plain words,
 
 ## Share it
 
-Free to use and share. If it helps you, star the repo and pass it to someone building an app.
+Free to use and share under the [MIT License](LICENSE). If it helps you, star the repo and pass it to someone building an app.
 
 ---
 
