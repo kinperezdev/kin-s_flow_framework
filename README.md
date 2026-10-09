@@ -80,7 +80,7 @@ The fix wasn't better slides. It was an app that teaches itself, in plain words,
 
 ## See it live
 
-**FlowK** is the example. It runs Kin's Flow on itself: tap "Show me around", the "i" buttons, and the "How it works" map.
+**[FlowK](https://flowkin.kinperez.com)** is the example. It runs Kin's Flow on itself: tap "Show me around", the "i" buttons, and the "How it works" map.
 
 ## Share it
 
