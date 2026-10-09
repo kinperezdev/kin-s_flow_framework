@@ -11,7 +11,7 @@ Kin's Flow is a guide for AI coding tools. Hand it over and the AI adds a safe d
 Paste this into Claude Code, Cursor, Codex, or any AI coding tool:
 
 ```text
-Read https://raw.githubusercontent.com/kinperezdev/kin-s_flow_framework/main/kins-flow.md and add Kin's Flow to this app. Show me the flow before building.
+Read kins-flow.md from https://github.com/kinperezdev/kin-s_flow_framework and add Kin's Flow to this app. Show me the flow before building.
 ```
 
 Or save [`kins-flow.md`](kins-flow.md) in your project and say "add Kin's Flow".
