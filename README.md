@@ -4,7 +4,7 @@
 
 Kin's Flow is a guide for AI coding tools. Hand it over and the AI adds a safe demo, tours, and help buttons to your app. Anyone can learn it without you there.
 
-> **For developers:** demo accounts with a write guard, data-driven tours, info text, a role flow map, and first-login setup. Works with any stack.
+> **For developers:** offline demo accounts, a "?" help menu, data-driven tours, info text, a role flow map, and first-login setup. Works with any stack.
 
 ## Get started in one step
 
@@ -20,12 +20,12 @@ Or save [`kins-flow.md`](kins-flow.md) in your project and say "add Kin's Flow".
 
 | # | Part | What it does | For developers |
 |---|------|--------------|----------------|
-| 01 | **Demo accounts** | A practice login for each user type. Click anything. Nothing real changes. | Shared sample data, reads match live RLS, write guard on the DB client |
-| 02 | **Show me around** | A tour for each user type: the flow, the setup, the daily work. | Steps stored as data, highlights real buttons, tested at 375 x 640 |
-| 03 | **Explain this page** | Every page can explain what it's for and what each part does. | Same engine as the tour, one tour per page |
+| 01 | **Demo accounts** | A practice login for each user type. Click anything. Nothing real changes. | Shared sample data, reads match live RLS, runs offline on in-memory data |
+| 02 | **Show me around** | A tour for each user type: the setup and the daily work. Replay it from the "?" at the top. | Steps stored as data, highlights real buttons, tested at 375 x 640 |
+| 03 | **Explain this page** | Every page can explain what it's for and what each part does, from the "?" menu. | Same engine as the tour, one tour per page |
 | 04 | **"i" buttons** | Tap the "i" on any card to see what it is and why it matters. | All text in one file, a test fails if one is missing |
 | 05 | **How it works** | One screen showing who starts the work and who finishes it. | Roles joined by arrows, "You" marker, once, daily, weekly steps |
-| 06 | **First-login setup** | New accounts get the same guide on day one, for real. | First-login flag per user, reuses the setup steps |
+| 06 | **First-login setup** | New accounts get the same guide on day one, for real. | First-login flag per user, spotlights the real form, typing keeps working |
 
 ## How it works with your AI
 
@@ -35,24 +35,27 @@ Or save [`kins-flow.md`](kins-flow.md) in your project and say "add Kin's Flow".
 
 ## The demo never touches real data
 
-- **Demo can't save.** Click anything. Nothing reaches your real records.
+- **Demo runs offline.** Every click works on sample data in the browser. Nothing reaches your real records.
 - **Same view as real life.** Each role sees only what it would really see.
-- **Tested.** A test fails if anything gets through.
+- **Tested.** A test fails if the demo makes any network call.
 
 ```ts
-const WRITE_METHODS = new Set(['insert', 'update', 'upsert', 'delete'])
+export function routeDemoTraffic<T extends SupabaseClient>(client: T): T {
+  const from = client.from.bind(client)
+  client.from = (table: string) =>
+    isDemoMode() ? createDemoQuery(table, loadDemoStore) : from(table)
 
-function guardBuilder<T extends object>(builder: T): T {
-  return new Proxy(builder, {
-    get(target, prop, receiver) {
-      const isWrite = typeof prop === 'string' && WRITE_METHODS.has(prop)
-      if (isWrite && isDemoMode()) return () => blockedChain()
-      const value = Reflect.get(target, prop, receiver)
-      return typeof value === 'function' ? value.bind(target) : value
-    },
-  })
+  const rpc = client.rpc.bind(client)
+  client.rpc = (...args) =>
+    isDemoMode() ? Promise.resolve({ data: null, error: null }) : rpc(...args)
+
+  return client
 }
 ```
+
+## One "?" for all help
+
+A "?" button at the top of every page opens three guides: **Show me around**, **Explain this page**, and **How it works**. It works for demo and real accounts, so nobody has to hunt for help.
 
 ## The rules the AI follows
 
